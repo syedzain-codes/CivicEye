@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicEye</title>
+
+    <style>
+
+        /* ================= THEME COLORS ================= */
+
+        :root {
+            --bg-color: white;
+            --text-color: #222;
+            --border-color: #ddd;
+            --hover-bg: #f2f2f2;
+            --secondary-text: #666;
+            --btn-bg: #222;
+            --btn-text: white;
+            --card-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --border-color: #444;
+            --hover-bg: #333;
+            --secondary-text: #aaa;
+            --btn-bg: #f0f0f0;
+            --btn-text: #1a1a1a;
+            --card-bg: #242424;
+        }
+
+
+        /* ================= RESET ================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* ================= BODY ================= */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            width: 100%;
+            padding: 20px 60px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        .nav-menu li:first-child a {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+        /* ================= DROPDOWN ================= */
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            list-style: none;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            width: 160px;
+            z-index: 100;
+        }
+
+        .dropdown-menu li {
+            padding: 10px;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+
+        /* ================= DARK MODE BUTTON ================= */
+
+        #theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--hover-bg);
+        }
+
+
+        /* ================= HERO ================= */
+
+        header {
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .head-text h1 {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .head-text h2 {
+            font-size: 25px;
+            font-weight: normal;
+            color: var(--secondary-text);
+        }
+
+
+        /* ================= REPORT BUTTON ================= */
+
+        #reportButton {
+            display: block;
+            margin: 0 auto 60px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+        }
+
+        #reportButton:hover {
+            opacity: 0.8;
+        }
+
+
+        /* ================= HOW IT WORKS ================= */
+
+        #tutorial {
+            padding: 60px;
+            text-align: center;
+        }
+
+        #tutorial h1 {
+            margin-bottom: 40px;
+            font-size: 35px;
+        }
+
+        .diy {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .diy-item {
+            width: 160px;
+            padding: 30px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+
+        /* ================= STATISTICS ================= */
+
+        .statistics {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 60px;
+        }
+
+        .statistics-item {
+            width: 220px;
+            padding: 30px 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+
+        /* ================= COMPLAINT SECTION ================= */
+
+        #publicIssue {
+            padding: 60px;
+        }
+
+        #publicIssue h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #complaints-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .complaint-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .complaint-card h2 {
+            margin-bottom: 15px;
+        }
+
+        .complaint-card p {
+            margin-bottom: 10px;
+            color: var(--secondary-text);
+        }
+
+
+        /* ================= MODAL ================= */
+
+        #complaint-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.5);
+
+            justify-content: center;
+            align-items: center;
+
+            z-index: 1000;
+        }
+
+        #complaint-modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        #close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+
+        /* ================= FORM ================= */
+
+        #complaintForm {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #complaintForm input,
+        #complaintForm textarea,
+        #complaintForm select {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        #complaintForm textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        #complaintForm button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .head-text h1 {
+                font-size: 40px;
+            }
+
+            .head-text h2 {
+                font-size: 20px;
+            }
+
+            .diy {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .statistics {
+                padding: 20px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .statistics-item {
+                width: 40%;
+                padding: 10px;
+            }
+
+            #tutorial,
+            #publicIssue {
+                padding: 40px 20px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVIGATION BAR ================= -->
+
+    <nav class="navbar">
+
+        <div class="nav-container">
+
+            <ul class="nav-menu">
+
+                <li class="nav-item">
+                    <a href="#">CivicEye</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#about">About</a>
+                </li>
+
+                <li class="nav-item dropdown">
+
+                    <a href="#issues">
+                        Services ▼
+                    </a>
+
+                    <ul class="dropdown-menu">
+
+                        <li>
+                            <a href="#reportIssue">Report Issue</a>
+                        </li>
+
+                        <li>
+                            <a href="#publicIssue">Public Issues</a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item">
+                    <a href="#login">Login</a>
+                </li>
+
+                <li class="nav-item">
+                    <button id="theme-toggle">🌙</button>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <header>
+
+        <div class="head-text">
+
+            <h1 id="hero">
+                Report Problems
+            </h1>
+
+            <h2 id="hero2">
+                Improve your college
+            </h2>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= REPORT BUTTON ================= -->
+
+    <button id="reportButton">
+        Report an Issue
+    </button>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section id="tutorial">
+
+        <h1>How It Works</h1>
+
+        <div class="diy">
+
+            <div class="diy-item">Report</div>
+
+            <div class="diy-item">Track</div>
+
+            <div class="diy-item">Resolve</div>
+
+            <div class="diy-item">Verify</div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <section class="statistics">
+
+        <div class="statistics-item">
+            Complaints Filed
+        </div>
+
+        <div class="statistics-item">
+            Complaints Resolved
+        </div>
+
+        <div class="statistics-item">
+            Complaints Pending
+        </div>
+
+    </section>
+
+
+    <!-- ================= PUBLIC ISSUES ================= -->
+
+    <section id="publicIssue">
+
+        <h1>Public Issues</h1>
+
+        <div id="complaints-container">
+
+            <!-- Complaints will appear here -->
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= COMPLAINT MODAL ================= -->
+
+    <div id="complaint-modal">
+
+        <div class="modal-content">
+
+            <button id="close">
+                ❌
+            </button>
+
+            <h2>Report an Issue</h2>
+
+
+            <form id="complaintForm">
+
+
+                <!-- TITLE -->
+
+                <label for="complaintTitle">
+                    Complaint Title
+                </label>
+
+                <input
+                    type="text"
+                    id="complaintTitle"
+                    placeholder="Enter complaint title"
+                >
+
+
+                <!-- CATEGORY -->
+
+                <label for="category">
+                    Select Category
+                </label>
+
+                <select id="category">
+
+                    <option value="">
+                        -- Select a category --
+                    </option>
+
+                    <option value="Infrastructure">
+                        Infrastructure
+                    </option>
+
+                    <option value="Cleanliness">
+                        Cleanliness
+                    </option>
+
+                    <option value="Water">
+                        Water
+                    </option>
+
+                    <option value="Electricity">
+                        Electricity
+                    </option>
+
+                    <option value="Hostel">
+                        Hostel
+                    </option>
+
+                    <option value="Classroom">
+                        Classroom
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <!-- DESCRIPTION -->
+
+                <label for="problemDesc">
+                    Describe Your Problem
+                </label>
+
+                <textarea
+                    id="problemDesc"
+                    placeholder="Describe your problem"
+                ></textarea>
+
+
+                <!-- LOCATION -->
+
+                <label for="problemLocation">
+                    Exact Location
+                </label>
+
+                <input
+                    type="text"
+                    id="problemLocation"
+                    placeholder="Enter exact location"
+                >
+
+
+                <!-- SUBMIT -->
+
+                <button type="submit">
+                    Submit Complaint
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        // ================= COMPLAINT STORAGE =================
+
+        const complaints = [];
+
+
+        // ================= DOM ELEMENTS =================
+
+        const modal =
+            document.getElementById("complaint-modal");
+
+        const openBtn =
+            document.getElementById("reportButton");
+
+        const closeBtn =
+            document.getElementById("close");
+
+        const form =
+            document.getElementById("complaintForm");
+
+        const complaintsContainer =
+            document.getElementById("complaints-container");
+
+        const toggle =
+            document.getElementById("theme-toggle");
+
+        const html =
+            document.documentElement;
+
+
+        // ================= OPEN MODAL =================
+
+        openBtn.addEventListener("click", function () {
+
+            modal.classList.add("open");
+
+            setTimeout(function () {
+
+                document
+                    .getElementById("complaintTitle")
+                    .focus();
+
+            }, 100);
+
+        });
+
+
+        // ================= CLOSE MODAL =================
+
+        closeBtn.addEventListener("click", function () {
+
+            modal.classList.remove("open");
+
+        });
+
+
+        // ================= BACKDROP CLICK =================
+
+        modal.addEventListener("click", function (e) {
+
+            if (e.target === modal) {
+
+                modal.classList.remove("open");
+
+            }
+
+        });
+
+
+        // ================= ESCAPE KEY =================
+
+        document.addEventListener("keydown", function (e) {
+
+            if (
+                e.key === "Escape" &&
+                modal.classList.contains("open")
+            ) {
+
+                modal.classList.remove("open");
+
+            }
+
+        });
+
+
+        // ================= FORM SUBMISSION =================
+
+        form.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+
+            // Get values
+
+            const title =
+                document
+                    .getElementById("complaintTitle")
+                    .value
+                    .trim();
+
+            const category =
+                document
+                    .getElementById("category")
+                    .value
+                    .trim();
+
+            const desc =
+                document
+                    .getElementById("problemDesc")
+                    .value
+                    .trim();
+
+            const location =
+                document
+                    .getElementById("problemLocation")
+                    .value
+                    .trim();
+
+
+            // ================= VALIDATION =================
+
+            if (title === "") {
+
+                alert("Please enter a complaint title");
+
+                return;
+
+            }
+
+
+            if (category === "") {
+
+                alert("Please select a category");
+
+                return;
+
+            }
+
+
+            if (desc === "") {
+
+                alert("Please enter a problem description");
+
+                return;
+
+            }
+
+
+            if (location === "") {
+
+                alert("Please enter the location");
+
+                return;
+
+            }
+
+
+            // ================= CREATE COMPLAINT OBJECT =================
+
+            const complaint = {
+
+                title: title,
+
+                category: category,
+
+                description: desc,
+
+                location: location
+
+            };
+
+
+            // ================= STORE IN ARRAY =================
+
+            complaints.push(complaint);
+
+            console.log(complaints);
+
+
+            // ================= CREATE COMPLAINT CARD =================
+
+            const complaintCard =
+                document.createElement("div");
+
+            complaintCard.classList.add(
+                "complaint-card"
+            );
+
+
+            // Title
+
+            const complaintTitle =
+                document.createElement("h2");
+
+            complaintTitle.textContent =
+                complaint.title;
+
+
+            // Category
+
+            const complaintCategory =
+                document.createElement("p");
+
+            complaintCategory.textContent =
+                "Category: " +
+                complaint.category;
+
+
+            // Description
+
+            const complaintDescription =
+                document.createElement("p");
+
+            complaintDescription.textContent =
+                complaint.description;
+
+
+            // Location
+
+            const complaintLocation =
+                document.createElement("p");
+
+            complaintLocation.textContent =
+                "Location: " +
+                complaint.location;
+
+
+            // ================= APPEND ELEMENTS =================
+
+            complaintCard.appendChild(
+                complaintTitle
+            );
+
+            complaintCard.appendChild(
+                complaintCategory
+            );
+
+            complaintCard.appendChild(
+                complaintDescription
+            );
+
+            complaintCard.appendChild(
+                complaintLocation
+            );
+
+
+            // Add card to page
+
+            complaintsContainer.appendChild(
+                complaintCard
+            );
+
+
+            // ================= SUCCESS =================
+
+            alert(
+                "Complaint submitted successfully!"
+            );
+
+
+            // Reset form
+
+            form.reset();
+
+
+            // Close modal
+
+            modal.classList.remove("open");
+
+
+            // Scroll to complaints
+
+            document
+                .getElementById("publicIssue")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        });
+
+
+        // ================= DARK MODE =================
+
+        const savedTheme =
+            localStorage.getItem("theme");
+
+
+        if (savedTheme === "dark") {
+
+            html.setAttribute(
+                "data-theme",
+                "dark"
+            );
+
+            toggle.textContent = "☀️";
+
+        }
+
+
+        toggle.addEventListener(
+            "click",
+            function () {
+
+                const isDark =
+                    html.getAttribute(
+                        "data-theme"
+                    ) === "dark";
+
+
+                if (isDark) {
+
+                    html.removeAttribute(
+                        "data-theme"
+                    );
+
+                    toggle.textContent =
+                        "🌙";
+
+
+                    localStorage.setItem(
+                        "theme",
+                        "light"
+                    );
+
+                }
+
+                else {
+
+                    html.setAttribute(
+                        "data-theme",
+                        "dark"
+                    );
+
+                    toggle.textContent =
+                        "☀️";
+
+
+                    localStorage.setItem(
+                        "theme",
+                        "dark"
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

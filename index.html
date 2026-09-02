@@ -1,988 +1,653 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CivicEye</title>
-
-    <style>
-
-        /* ================= THEME COLORS ================= */
-
-        :root {
-            --bg-color: white;
-            --text-color: #222;
-            --border-color: #ddd;
-            --hover-bg: #f2f2f2;
-            --secondary-text: #666;
-            --btn-bg: #222;
-            --btn-text: white;
-            --card-bg: #ffffff;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --border-color: #444;
-            --hover-bg: #333;
-            --secondary-text: #aaa;
-            --btn-bg: #f0f0f0;
-            --btn-text: #1a1a1a;
-            --card-bg: #242424;
-        }
-
-
-        /* ================= RESET ================= */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-
-        /* ================= BODY ================= */
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-
-        /* ================= NAVBAR ================= */
-
-        .navbar {
-            width: 100%;
-            padding: 20px 60px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-size: 16px;
-        }
-
-        .nav-menu li:first-child a {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-
-        /* ================= DROPDOWN ================= */
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 30px;
-            left: 0;
-            list-style: none;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            width: 160px;
-            z-index: 100;
-        }
-
-        .dropdown-menu li {
-            padding: 10px;
-        }
-
-        .dropdown-menu li:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-
-        /* ================= DARK MODE BUTTON ================= */
-
-        #theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--text-color);
-        }
-
-        #theme-toggle:hover {
-            background-color: var(--hover-bg);
-        }
-
-
-        /* ================= HERO ================= */
-
-        header {
-            min-height: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .head-text h1 {
-            font-size: 55px;
-            margin-bottom: 15px;
-        }
-
-        .head-text h2 {
-            font-size: 25px;
-            font-weight: normal;
-            color: var(--secondary-text);
-        }
-
-
-        /* ================= REPORT BUTTON ================= */
-
-        #reportButton {
-            display: block;
-            margin: 0 auto 60px;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
-        }
-
-        #reportButton:hover {
-            opacity: 0.8;
-        }
-
-
-        /* ================= HOW IT WORKS ================= */
-
-        #tutorial {
-            padding: 60px;
-            text-align: center;
-        }
-
-        #tutorial h1 {
-            margin-bottom: 40px;
-            font-size: 35px;
-        }
-
-        .diy {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-        }
-
-        .diy-item {
-            width: 160px;
-            padding: 30px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 18px;
-        }
-
-
-        /* ================= STATISTICS ================= */
-
-        .statistics {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            padding: 60px;
-        }
-
-        .statistics-item {
-            width: 220px;
-            padding: 30px 20px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 18px;
-        }
-
-
-        /* ================= COMPLAINT SECTION ================= */
-
-        #publicIssue {
-            padding: 60px;
-        }
-
-        #publicIssue h1 {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        #complaints-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .complaint-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .complaint-card h2 {
-            margin-bottom: 15px;
-        }
-
-        .complaint-card p {
-            margin-bottom: 10px;
-            color: var(--secondary-text);
-        }
-
-
-        /* ================= MODAL ================= */
-
-        #complaint-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 100%;
-
-            background: rgba(0, 0, 0, 0.5);
-
-            justify-content: center;
-            align-items: center;
-
-            z-index: 1000;
-        }
-
-        #complaint-modal.open {
-            display: flex;
-        }
-
-        .modal-content {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 12px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        #close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-
-        /* ================= FORM ================= */
-
-        #complaintForm {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        #complaintForm input,
-        #complaintForm textarea,
-        #complaintForm select {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 16px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        #complaintForm textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        #complaintForm button {
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
-        }
-
-
-        /* ================= RESPONSIVE ================= */
-
-        @media (max-width: 768px) {
-
-            .navbar {
-                padding: 15px 20px;
-            }
-
-            .nav-menu {
-                gap: 15px;
-                flex-wrap: wrap;
-            }
-
-            .head-text h1 {
-                font-size: 40px;
-            }
-
-            .head-text h2 {
-                font-size: 20px;
-            }
-
-            .diy {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .statistics {
-                padding: 20px;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            .statistics-item {
-                width: 40%;
-                padding: 10px;
-            }
-
-            #tutorial,
-            #publicIssue {
-                padding: 40px 20px;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KitsEye · Civic reporting</title>
+  <!-- No external dependencies – pure HTML + CSS + JS -->
+  <style>
+    /* ----- global reset & theme variables ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #222222;
+      --border-color: #dddddd;
+      --hover-bg: #f2f2f2;
+      --secondary-text: #666666;
+      --btn-bg: #222222;
+      --btn-text: #ffffff;
+      --modal-bg: rgba(0,0,0,0.4);
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #f0f0f0;
+      --border-color: #444444;
+      --hover-bg: #333333;
+      --secondary-text: #aaaaaa;
+      --btn-bg: #f0f0f0;
+      --btn-text: #1a1a1a;
+      --modal-bg: rgba(0,0,0,0.7);
+      --card-shadow: 0 4px 12px rgba(255,255,255,0.04);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.25s, color 0.25s;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ----- navbar ----- */
+    .navbar {
+      width: 100%;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      transition: background-color 0.25s;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    .nav-menu a:hover {
+      color: var(--secondary-text);
+    }
+
+    .nav-menu li:first-child a {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    /* dropdown */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      left: 0;
+      list-style: none;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 160px;
+      padding: 6px 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+
+    .dropdown-menu li {
+      padding: 8px 16px;
+    }
+
+    .dropdown-menu li:hover {
+      background-color: var(--hover-bg);
+      border-radius: 6px;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    /* theme toggle */
+    #theme-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: background 0.2s, border 0.2s;
+    }
+
+    #theme-toggle:hover {
+      background-color: var(--hover-bg);
+    }
+
+    /* ----- hero ----- */
+    header {
+      min-height: 340px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .head-text h1 {
+      font-size: 54px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .head-text h2 {
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--secondary-text);
+    }
+
+    /* report button */
+    #reportButton {
+      display: block;
+      margin: 0 auto 50px;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 60px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    #reportButton:hover {
+      opacity: 0.85;
+      transform: scale(1.01);
+    }
+
+    /* ----- how it works ----- */
+    #tutorial {
+      padding: 40px 20px 60px;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    #tutorial h1 {
+      font-size: 34px;
+      font-weight: 600;
+      margin-bottom: 36px;
+      letter-spacing: -0.5px;
+    }
+
+    .diy {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .diy-item {
+      width: 160px;
+      padding: 28px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 500;
+      background-color: var(--bg-color);
+      transition: background 0.2s, border-color 0.2s;
+      box-shadow: var(--card-shadow);
+    }
+
+    .diy-item:hover {
+      border-color: var(--secondary-text);
+    }
+
+    /* ----- statistics ----- */
+    .statistics {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px 20px 70px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .statistics-item {
+      width: 220px;
+      padding: 30px 16px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 500;
+      background-color: var(--bg-color);
+      transition: background 0.2s;
+      box-shadow: var(--card-shadow);
+    }
+
+    /* ----- modal (complaint form) ----- */
+    #complaint-modal {
+      display: none; /* hidden by default */
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: var(--modal-bg);
+      backdrop-filter: blur(3px);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    #complaint-modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      max-width: 480px;
+      width: 100%;
+      padding: 32px 28px;
+      border-radius: 28px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .modal-content h2 {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: -0.3px;
+    }
+
+    #close {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--secondary-text);
+      transition: color 0.2s;
+      padding: 4px 8px;
+    }
+
+    #close:hover {
+      color: var(--text-color);
+    }
+
+    .modal-content form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      font-size: 15px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: border 0.2s, background 0.2s;
+      width: 100%;
+    }
+
+    .modal-content input:focus,
+    .modal-content select:focus {
+      outline: none;
+      border-color: #888;
+    }
+
+    .modal-content label {
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 2px;
+      color: var(--secondary-text);
+    }
+
+    .modal-content input[type="submit"] {
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      font-weight: 600;
+      font-size: 17px;
+      cursor: pointer;
+      padding: 16px;
+      border-radius: 60px;
+      margin-top: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .modal-content input[type="submit"]:hover {
+      opacity: 0.85;
+    }
+
+    /* small tweaks */
+    .modal-content .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    #recentIssues{
+      
+      padding:40px;
+      text-align: center;
+    }
+    #complaintsContainer{
+      display: flex;
+      flex-wrap:wrap;
+      gap:20px;
+      justify-content: center;
+      
+    }
+    .complaint-card{
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width:250px;
+      padding:8px;
+      border: 1px solid var(--bg-color);
+      border-radius: 4px;
+      gap:4px;
+      background-color: var(--bg-color);
+
+    }
+    
+
+    /* ----- responsive ----- */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 14px 20px;
+      }
+      .nav-menu {
+        gap: 16px;
+      }
+      .nav-menu li:first-child a {
+        font-size: 20px;
+      }
+      .head-text h1 {
+        font-size: 38px;
+      }
+      .head-text h2 {
+        font-size: 20px;
+      }
+      .diy {
+        flex-direction: column;
+        align-items: center;
+      }
+      .diy-item {
+        width: 80%;
+        max-width: 260px;
+      }
+      .statistics {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 20px 16px 50px;
+      }
+      .statistics-item {
+        width: calc(50% - 12px);
+        min-width: 140px;
+        padding: 20px 10px;
+      }
+      .modal-content {
+        padding: 24px 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .statistics-item {
+        width: 100%;
+        max-width: 260px;
+      }
+      .nav-menu {
+        gap: 12px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
-
-
 <body>
 
-
-    <!-- ================= NAVIGATION BAR ================= -->
-
-    <nav class="navbar">
-
-        <div class="nav-container">
-
-            <ul class="nav-menu">
-
-                <li class="nav-item">
-                    <a href="#">CivicEye</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#about">About</a>
-                </li>
-
-                <li class="nav-item dropdown">
-
-                    <a href="#issues">
-                        Services ▼
-                    </a>
-
-                    <ul class="dropdown-menu">
-
-                        <li>
-                            <a href="#reportIssue">Report Issue</a>
-                        </li>
-
-                        <li>
-                            <a href="#publicIssue">Public Issues</a>
-                        </li>
-
-                    </ul>
-
-                </li>
-
-                <li class="nav-item">
-                    <a href="#login">Login</a>
-                </li>
-
-                <li class="nav-item">
-                    <button id="theme-toggle">🌙</button>
-                </li>
-
-            </ul>
-
-        </div>
-
-    </nav>
-
-
-    <!-- ================= HERO ================= -->
-
-    <header>
-
-        <div class="head-text">
-
-            <h1 id="hero">
-                Report Problems
-            </h1>
-
-            <h2 id="hero2">
-                Improve your college
-            </h2>
-
-        </div>
-
-    </header>
-
-
-    <!-- ================= REPORT BUTTON ================= -->
-
-    <button id="reportButton">
-        Report an Issue
-    </button>
-
-
-    <!-- ================= HOW IT WORKS ================= -->
-
-    <section id="tutorial">
-
-        <h1>How It Works</h1>
-
-        <div class="diy">
-
-            <div class="diy-item">Report</div>
-
-            <div class="diy-item">Track</div>
-
-            <div class="diy-item">Resolve</div>
-
-            <div class="diy-item">Verify</div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= STATISTICS ================= -->
-
-    <section class="statistics">
-
-        <div class="statistics-item">
-            Complaints Filed
-        </div>
-
-        <div class="statistics-item">
-            Complaints Resolved
-        </div>
-
-        <div class="statistics-item">
-            Complaints Pending
-        </div>
-
-    </section>
-
-
-    <!-- ================= PUBLIC ISSUES ================= -->
-
-    <section id="publicIssue">
-
-        <h1>Public Issues</h1>
-
-        <div id="complaints-container">
-
-            <!-- Complaints will appear here -->
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= COMPLAINT MODAL ================= -->
-
-    <div id="complaint-modal">
-
-        <div class="modal-content">
-
-            <button id="close">
-                ❌
-            </button>
-
-            <h2>Report an Issue</h2>
-
-
-            <form id="complaintForm">
-
-
-                <!-- TITLE -->
-
-                <label for="complaintTitle">
-                    Complaint Title
-                </label>
-
-                <input
-                    type="text"
-                    id="complaintTitle"
-                    placeholder="Enter complaint title"
-                >
-
-
-                <!-- CATEGORY -->
-
-                <label for="category">
-                    Select Category
-                </label>
-
-                <select id="category">
-
-                    <option value="">
-                        -- Select a category --
-                    </option>
-
-                    <option value="Infrastructure">
-                        Infrastructure
-                    </option>
-
-                    <option value="Cleanliness">
-                        Cleanliness
-                    </option>
-
-                    <option value="Water">
-                        Water
-                    </option>
-
-                    <option value="Electricity">
-                        Electricity
-                    </option>
-
-                    <option value="Hostel">
-                        Hostel
-                    </option>
-
-                    <option value="Classroom">
-                        Classroom
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-
-
-                <!-- DESCRIPTION -->
-
-                <label for="problemDesc">
-                    Describe Your Problem
-                </label>
-
-                <textarea
-                    id="problemDesc"
-                    placeholder="Describe your problem"
-                ></textarea>
-
-
-                <!-- LOCATION -->
-
-                <label for="problemLocation">
-                    Exact Location
-                </label>
-
-                <input
-                    type="text"
-                    id="problemLocation"
-                    placeholder="Enter exact location"
-                >
-
-
-                <!-- SUBMIT -->
-
-                <button type="submit">
-                    Submit Complaint
-                </button>
-
-
-            </form>
-
-        </div>
-
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#">CivicEye</a></li>
+        <li class="nav-item"><a href="#about">About</a></li>
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+          <a href="#issues" class="nav-link">Services ▼</a>
+          <ul class="dropdown-menu">
+            <li><a href="#reportIssue">Report Issue</a></li>
+            <li><a href="#publicIssue">Public Issues</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="#login">Login</a></li>
+        <li class="nav-item">
+          <button id="theme-toggle" aria-label="toggle dark mode">🌙</button>
+        </li>
+      </ul>
     </div>
-
-
-
-    <!-- ================= JAVASCRIPT ================= -->
-
-    <script>
-
-        // ================= COMPLAINT STORAGE =================
-
-        const complaints = [];
-
-
-        // ================= DOM ELEMENTS =================
-
-        const modal =
-            document.getElementById("complaint-modal");
-
-        const openBtn =
-            document.getElementById("reportButton");
-
-        const closeBtn =
-            document.getElementById("close");
-
-        const form =
-            document.getElementById("complaintForm");
-
-        const complaintsContainer =
-            document.getElementById("complaints-container");
-
-        const toggle =
-            document.getElementById("theme-toggle");
-
-        const html =
-            document.documentElement;
-
-
-        // ================= OPEN MODAL =================
-
-        openBtn.addEventListener("click", function () {
-
-            modal.classList.add("open");
-
-            setTimeout(function () {
-
-                document
-                    .getElementById("complaintTitle")
-                    .focus();
-
-            }, 100);
-
-        });
-
-
-        // ================= CLOSE MODAL =================
-
-        closeBtn.addEventListener("click", function () {
-
-            modal.classList.remove("open");
-
-        });
-
-
-        // ================= BACKDROP CLICK =================
-
-        modal.addEventListener("click", function (e) {
-
-            if (e.target === modal) {
-
-                modal.classList.remove("open");
-
-            }
-
-        });
-
-
-        // ================= ESCAPE KEY =================
-
-        document.addEventListener("keydown", function (e) {
-
-            if (
-                e.key === "Escape" &&
-                modal.classList.contains("open")
-            ) {
-
-                modal.classList.remove("open");
-
-            }
-
-        });
-
-
-        // ================= FORM SUBMISSION =================
-
-        form.addEventListener("submit", function (e) {
-
-            e.preventDefault();
-
-
-            // Get values
-
-            const title =
-                document
-                    .getElementById("complaintTitle")
-                    .value
-                    .trim();
-
-            const category =
-                document
-                    .getElementById("category")
-                    .value
-                    .trim();
-
-            const desc =
-                document
-                    .getElementById("problemDesc")
-                    .value
-                    .trim();
-
-            const location =
-                document
-                    .getElementById("problemLocation")
-                    .value
-                    .trim();
-
-
-            // ================= VALIDATION =================
-
-            if (title === "") {
-
-                alert("Please enter a complaint title");
-
-                return;
-
-            }
-
-
-            if (category === "") {
-
-                alert("Please select a category");
-
-                return;
-
-            }
-
-
-            if (desc === "") {
-
-                alert("Please enter a problem description");
-
-                return;
-
-            }
-
-
-            if (location === "") {
-
-                alert("Please enter the location");
-
-                return;
-
-            }
-
-
-            // ================= CREATE COMPLAINT OBJECT =================
-
-            const complaint = {
-
-                title: title,
-
-                category: category,
-
-                description: desc,
-
-                location: location
-
-            };
-
-
-            // ================= STORE IN ARRAY =================
-
-            complaints.push(complaint);
-
-            console.log(complaints);
-
-
-            // ================= CREATE COMPLAINT CARD =================
-
-            const complaintCard =
-                document.createElement("div");
-
-            complaintCard.classList.add(
-                "complaint-card"
-            );
-
-
-            // Title
-
-            const complaintTitle =
-                document.createElement("h2");
-
-            complaintTitle.textContent =
-                complaint.title;
-
-
-            // Category
-
-            const complaintCategory =
-                document.createElement("p");
-
-            complaintCategory.textContent =
-                "Category: " +
-                complaint.category;
-
-
-            // Description
-
-            const complaintDescription =
-                document.createElement("p");
-
-            complaintDescription.textContent =
-                complaint.description;
-
-
-            // Location
-
-            const complaintLocation =
-                document.createElement("p");
-
-            complaintLocation.textContent =
-                "Location: " +
-                complaint.location;
-
-
-            // ================= APPEND ELEMENTS =================
-
-            complaintCard.appendChild(
-                complaintTitle
-            );
-
-            complaintCard.appendChild(
-                complaintCategory
-            );
-
-            complaintCard.appendChild(
-                complaintDescription
-            );
-
-            complaintCard.appendChild(
-                complaintLocation
-            );
-
-
-            // Add card to page
-
-            complaintsContainer.appendChild(
-                complaintCard
-            );
-
-
-            // ================= SUCCESS =================
-
-            alert(
-                "Complaint submitted successfully!"
-            );
-
-
-            // Reset form
-
-            form.reset();
-
-
-            // Close modal
-
-            modal.classList.remove("open");
-
-
-            // Scroll to complaints
-
-            document
-                .getElementById("publicIssue")
-                .scrollIntoView({
-                    behavior: "smooth"
-                });
-
-        });
-
-
-        // ================= DARK MODE =================
-
-        const savedTheme =
-            localStorage.getItem("theme");
-
-
-        if (savedTheme === "dark") {
-
-            html.setAttribute(
-                "data-theme",
-                "dark"
-            );
-
-            toggle.textContent = "☀️";
-
+  </nav>
+
+  <!-- Hero -->
+  <header>
+    <div class="head-text">
+      <h1 id="hero">Report Problems</h1>
+      <h2 id="hero2">Improve your City</h2>
+    </div>
+  </header>
+
+  <!-- Report Button (opens modal) -->
+  <button id="reportButton">Report an Issue</button>
+
+  <!-- How It Works -->
+  <section id="tutorial">
+    <h1>How It Works</h1>
+    <div class="diy">
+      <div class="diy-item">Report</div>
+      <div class="diy-item">Track</div>
+      <div class="diy-item">Resolve</div>
+      <div class="diy-item">Verify</div>
+    </div>
+  </section>
+
+  <!-- Statistics -->
+  <section class="statistics">
+    <div class="statistics-item">Complaints Filed</div>
+    <div class="statistics-item">Complaints Resolved</div>
+    <div class="statistics-item">Complaints Pending</div>
+  </section>
+
+  <!-- Modal / overlay -->
+  <div id="complaint-modal">
+    <div class="modal-content">
+      <button id="close" aria-label="close modal">❌</button>
+      <h2>Report an Issue</h2>
+      <form id="complaintForm">
+        <div class="field-group">
+          <input type="text" placeholder="Complaint Title" id="complaintTitle">
+        </div>
+
+        <div class="field-group">
+          <label for="category">Select Category:</label>
+          <select id="category" name="category">
+            <option value="">-- Select an option --</option>
+            <option value="infrastructure">Infrastructure</option>
+            <option value="cleanliness">Cleanliness</option>
+            <option value="water">Water</option>
+            <option value="electricity">Electricity</option>
+
+          </select>
+        </div>
+
+        <div class="field-group">
+          <textarea placeholder="Describe your problem" id="problemDesc"></textarea>
+
+        </div>
+        <div class="field-group">
+          <input type="text" placeholder="Exact location" id="problemLocation">
+        </div>
+
+        <!-- duplicate label removed, kept clean -->
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <section id="recentIssues">
+    <h1>Recent Issues</h1>
+
+    <div id="complaintsContainer"></div>
+</section>
+  </div>
+
+  <script>
+    (function() {
+      // ----- DOM elements -----
+      const modal = document.getElementById('complaint-modal');
+      const openBtn = document.getElementById('reportButton');
+      const closeBtn = document.getElementById('close');
+      const form = document.getElementById('complaintForm');
+      const complaints = [];
+      const complaintsContainer = document.getElementById("complaintsContainer");
+
+      // ----- open modal -----
+      openBtn.addEventListener('click', function(e) {
+        modal.classList.add('open');
+        // small accessibility: focus inside
+        setTimeout(() => {
+          const firstInput = modal.querySelector('input, select');
+          if (firstInput) firstInput.focus();
+        }, 100);
+      });
+
+      // ----- close modal (X) -----
+      closeBtn.addEventListener('click', function() {
+        modal.classList.remove('open');
+      });
+
+      // ----- close on backdrop click -----
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('open');
+        }
+      });
+
+      // ----- close with Escape key -----
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+          modal.classList.remove('open');
+        }
+      });
+
+      // ----- form submit (demo) -----
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+    
+        const category = document.getElementById('category').value.trim();
+        const desc = document.getElementById('problemDesc').value.trim();
+        const location = document.getElementById('problemLocation').value.trim();
+         const title = document.getElementById("complaintTitle").value.trim();
+
+
+        if (category===""){
+          alert("please enter category")
+          return;
+        }  
+        if (desc===""){
+          alert("please enter the problem description");
+          return;
+        }
+        if(location===""){
+          alert("Please enter the location");
+          return
         }
 
+   
 
-        toggle.addEventListener(
-            "click",
-            function () {
+    if (title === "") {
+        alert("please enter complaint title");
+        return
+    }
+   
 
-                const isDark =
-                    html.getAttribute(
-                        "data-theme"
-                    ) === "dark";
+const complaint = {
+    title: title,
+    category: category,
+    location: location
+};
 
-
-                if (isDark) {
-
-                    html.removeAttribute(
-                        "data-theme"
-                    );
-
-                    toggle.textContent =
-                        "🌙";
-
-
-                    localStorage.setItem(
-                        "theme",
-                        "light"
-                    );
-
-                }
-
-                else {
-
-                    html.setAttribute(
-                        "data-theme",
-                        "dark"
-                    );
-
-                    toggle.textContent =
-                        "☀️";
+complaints.push(complaint);
+const complaints_section=document.createElement(section);
+const header=document.createElement(h1);
+header.textContent=desc;
+complaints_section.appendChild(header);
+const container=document.createElement(div);
+complaints_section.appendChild(container)
 
 
-                    localStorage.setItem(
-                        "theme",
-                        "dark"
-                    );
 
-                }
+    
+        alert(`📬 Issue reported!\n\nTitle: ${title}\nCategory: ${category}\nDescription: ${desc}\nLocation: ${location}`);
 
-            }
-        );
+              form.reset();
+        modal.classList.remove('open');
+       // reset form & close modal
+       
+      });
 
-    </script>
+      // ----- dark mode toggle (with localStorage) -----
+      const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
 
+      // load saved theme
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        toggle.textContent = '☀️';
+      }
+
+      toggle.addEventListener('click', function() {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          html.removeAttribute('data-theme');
+          toggle.textContent = '🌙';
+          localStorage.setItem('theme', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          toggle.textContent = '☀️';
+          localStorage.setItem('theme', 'dark');
+        }
+   });
+   
+
+
+    })();
+  </script>
 
 </body>
-
 </html>
